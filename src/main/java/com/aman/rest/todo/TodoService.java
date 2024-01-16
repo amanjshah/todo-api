@@ -2,6 +2,7 @@ package com.aman.rest.todo;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.function.Predicate;
 
 import org.springframework.stereotype.Service;
@@ -11,7 +12,7 @@ public class TodoService {
 	
 	private static List<Todo> todos = new ArrayList<>();
 	
-	private static int todosCount = 0;
+	private static Long todosCount = 0L;
 	
 	static {
 		todos.add(new Todo(++todosCount, "aman","Finish Spring Boot course",
@@ -34,13 +35,13 @@ public class TodoService {
 		return todo;
 	}
 	
-	public void deleteById(int id) {
-		Predicate<? super Todo> predicate = todo -> todo.getId() == id;
+	public void deleteById(Long id) {
+		Predicate<? super Todo> predicate = todo -> Objects.equals(todo.getId(), id);
 		todos.removeIf(predicate);
 	}
 
-	public Todo findById(int id) {
-		Predicate<? super Todo> predicate = todo -> todo.getId() == id;
+	public Todo findById(Long id) {
+		Predicate<? super Todo> predicate = todo -> Objects.equals(todo.getId(), id);
 		return todos.stream().filter(predicate).findFirst().get();
 	}
 

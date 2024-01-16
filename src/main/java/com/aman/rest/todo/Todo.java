@@ -2,22 +2,29 @@ package com.aman.rest.todo;
 
 import java.time.LocalDate;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import lombok.*;
 
+@Entity
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Todo {
 
-	private int id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@NotBlank(message =  "username cannot be blank")
+	@NonNull
+	@Column(nullable = false, unique = true)
 	private String username;
+
 	private String description;
 	private LocalDate targetDate;
-	private boolean done;
+	private Boolean done;
 
 	@Override
 	public String toString() {
