@@ -17,4 +17,9 @@ public class TodoController {
     public List<Todo> getTodoList(@PathVariable String username) {
         return todoService.findByUsername(username);
     }
+
+    @GetMapping("/users/{username}/todos/{id}")
+    public Todo getTodoItem(@PathVariable String username, @PathVariable Long id) {
+        return todoService.findById(id);
+    }
 }
