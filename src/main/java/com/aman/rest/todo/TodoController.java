@@ -3,6 +3,8 @@ package com.aman.rest.todo;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,5 +23,11 @@ public class TodoController {
     @GetMapping("/users/{username}/todos/{id}")
     public Todo getTodoItem(@PathVariable String username, @PathVariable Long id) {
         return todoService.findById(id);
+    }
+
+    @DeleteMapping("/users/{username}/todos/{id}")
+    public ResponseEntity<Void> deleteTodoItem(@PathVariable String username, @PathVariable Long id) {
+        todoService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
 }
