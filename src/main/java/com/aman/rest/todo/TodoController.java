@@ -33,4 +33,10 @@ public class TodoController {
         return todoService.addTodo(username, todo.getDescription(), todo.getTargetDate(), todo.getIsDone());
     }
 
+    @PutMapping("/users/{username}/todos/{id}")
+    public Todo updateTodoItem(@PathVariable String username, @PathVariable Long id, @RequestBody Todo todo) {
+        todoService.updateTodo(todo);
+        return todo;
+    }
+
 }
