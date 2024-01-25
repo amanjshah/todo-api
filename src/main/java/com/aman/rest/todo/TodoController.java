@@ -12,6 +12,11 @@ public class TodoController {
 
     private TodoService todoService;
 
+    @GetMapping(path = "/authenticate")
+    public String authenticate() {
+        return "Success";
+    }
+
     @GetMapping("/users/{username}/todos")
     public List<Todo> getTodoList(@PathVariable String username) {
         return todoService.findByUsername(username);
