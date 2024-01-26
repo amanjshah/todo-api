@@ -32,10 +32,10 @@ public class TodoService {
 		return todoRepository.findByUsername(username);
 	}
 	
-	public Todo addTodo(String username, String description, LocalDate targetDate, boolean done) {
-		Todo todo = new Todo(++todosCount,username,description,targetDate,done);
-		todos.add(todo);
-		return todo;
+	public Todo addTodo(String username, Todo todo) {
+		todo.setUsername(username);
+		todo.setId(null);
+		return todoRepository.save(todo);
 	}
 	
 	public void deleteById(Long id) {
