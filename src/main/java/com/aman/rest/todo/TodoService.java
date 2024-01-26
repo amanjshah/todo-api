@@ -1,32 +1,17 @@
 package com.aman.rest.todo;
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 
 import com.aman.rest.exception.TodoNotFoundException;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
+@AllArgsConstructor
 public class TodoService {
 
-	@Autowired
 	private TodoRepository todoRepository;
-
-	private static List<Todo> todos = new ArrayList<>();
-	
-	private static Long todosCount = 0L;
-	
-	static {
-		todos.add(new Todo(++todosCount, "aman","Finish Spring Boot course",
-							LocalDate.now().plusYears(1), false ));
-		todos.add(new Todo(++todosCount, "aman","Finish reading UDS",
-				LocalDate.now().plusYears(1), false ));
-		todos.add(new Todo(++todosCount, "aman","Learn AWS",
-				LocalDate.now().plusYears(3), false ));
-	}
 	
 	public List<Todo> findByUsername(String username){
 		return todoRepository.findByUsername(username);
