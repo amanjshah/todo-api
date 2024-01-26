@@ -2,14 +2,19 @@ package com.aman.rest.todo;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.function.Predicate;
+import java.util.Optional;
 
+
+import com.aman.rest.exception.TodoNotFoundException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TodoService {
-	
+
+	@Autowired
+	private TodoRepository todoRepository;
+
 	private static List<Todo> todos = new ArrayList<>();
 	
 	private static Long todosCount = 0L;
@@ -24,9 +29,7 @@ public class TodoService {
 	}
 	
 	public List<Todo> findByUsername(String username){
-		Predicate<? super Todo> predicate = 
-				todo -> todo.getUsername().equalsIgnoreCase(username);
-		return todos.stream().filter(predicate).toList();
+		return todoRepository.findByUsername(username);
 	}
 	
 	public Todo addTodo(String username, String description, LocalDate targetDate, boolean done) {
@@ -36,17 +39,19 @@ public class TodoService {
 	}
 	
 	public void deleteById(Long id) {
-		Predicate<? super Todo> predicate = todo -> Objects.equals(todo.getId(), id);
-		todos.removeIf(predicate);
+		todoRepository.deleteById(id);
 	}
 
 	public Todo findById(Long id) {
-		Predicate<? super Todo> predicate = todo -> Objects.equals(todo.getId(), id);
-		return todos.stream().filter(predicate).findFirst().get();
+		return unwrapTodo(id, todoRepository.findById(id));
 	}
 
 	public void updateTodo(Todo todo) {
-		deleteById(todo.getId());
-		todos.add(todo);
+		todoRepository.save(todo);
+	}
+
+	private Todo unwrapTodo(Long id, Optional<Todo> optionalTodo) {
+		if (optionalTodo.isPresent()) return optionalTodo.get();
+		throw new TodoNotFoundException(id);
 	}
 }
