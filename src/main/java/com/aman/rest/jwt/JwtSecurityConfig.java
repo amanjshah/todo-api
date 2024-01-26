@@ -52,17 +52,16 @@ public class JwtSecurityConfig {
                 .antMatchers("/authenticate").permitAll()
                 .requestMatchers(PathRequest.toH2Console()).permitAll() // h2-console is a servlet and NOT recommended for a production
                 .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
+                .requestMatchers(PathRequest.toH2Console()).permitAll()
                 .anyRequest()
-                .authenticated())
+                .authenticated()
+            )
             .csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session -> session.
                 sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .oauth2ResourceServer(
-                OAuth2ResourceServerConfigurer::jwt)
-            .httpBasic(
-                Customizer.withDefaults())
-            .headers(header -> header.
-                frameOptions().sameOrigin())
+            .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
+            .httpBasic(Customizer.withDefaults())
+            .headers(header -> header.frameOptions().sameOrigin())
             .build();
     }
 
