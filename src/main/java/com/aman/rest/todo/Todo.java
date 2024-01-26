@@ -19,7 +19,7 @@ public class Todo {
 
 	@NotBlank(message =  "username cannot be blank")
 	@NonNull
-	@Column(nullable = false, unique = true)
+	@Column(nullable = false)
 	private String username;
 
 	private String description;
