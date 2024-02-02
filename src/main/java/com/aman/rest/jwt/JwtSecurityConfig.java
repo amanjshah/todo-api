@@ -45,12 +45,10 @@ public class JwtSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, HandlerMappingIntrospector introspector) throws Exception {
 
-        // h2-console is a servlet
-        // https://github.com/spring-projects/spring-security/issues/12310
         return httpSecurity
             .authorizeHttpRequests(auth -> auth
                 .antMatchers("/authenticate").permitAll()
-                .requestMatchers(PathRequest.toH2Console()).permitAll() // h2-console is a servlet and NOT recommended for a production
+                .requestMatchers(PathRequest.toH2Console()).permitAll()
                 .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                 .requestMatchers(PathRequest.toH2Console()).permitAll()
                 .anyRequest()
