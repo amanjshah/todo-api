@@ -58,6 +58,7 @@ public class JwtSecurityConfig {
                 sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .oauth2ResourceServer(OAuth2ResourceServerConfigurer::jwt)
             .httpBasic(Customizer.withDefaults())
+            .oauth2Login(Customizer.withDefaults())
             .headers(header -> header.frameOptions().sameOrigin())
             .build();
     }
