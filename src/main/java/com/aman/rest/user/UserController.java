@@ -22,7 +22,7 @@ public class UserController {
             new InMemoryUserDetailsManager(
                 org.springframework.security.core.userdetails.User
                     .withUsername(user.getUsername())
-                    .password(user.getPassword())
+                    .password("{noop}" + user.getPassword())
                     .authorities("read")
                     .roles("USER")
                     .build()
