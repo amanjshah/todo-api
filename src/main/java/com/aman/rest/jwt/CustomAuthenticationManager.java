@@ -1,7 +1,7 @@
 package com.aman.rest.jwt;
 
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.context.MessageSource;
@@ -22,10 +22,9 @@ public class CustomAuthenticationManager implements AuthenticationManager {
     }
 
     public CustomAuthenticationManager(List<AuthenticationProvider> providers) {
-        this.providers = Collections.emptyList();
         this.messages = SpringSecurityMessageSource.getAccessor();
         Assert.notNull(providers, "providers list cannot be null");
-        this.providers = providers;
+        this.providers = new ArrayList<>(providers);
     }
 
     public void addProvider(AuthenticationProvider provider) {
