@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private CustomAuthenticationManager customAuthenticationManager;
+    private UserRepository userRepository;
 
     @PostMapping("/register")
     public User createUser(@Valid @RequestBody User user) {
@@ -29,6 +30,7 @@ public class UserController {
             )
         );
         customAuthenticationManager.addProvider(provider);
+        userRepository.save(user);
         return user;
     }
 }
