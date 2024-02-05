@@ -6,6 +6,8 @@ import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.util.UUID;
 
+import com.aman.rest.user.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,9 +39,12 @@ import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
 
 @Configuration
+@AllArgsConstructor
 @EnableWebSecurity
 @EnableMethodSecurity
 public class JwtSecurityConfig {
+
+    private UserRepository userRepository;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, HandlerMappingIntrospector introspector) throws Exception {
@@ -67,7 +72,7 @@ public class JwtSecurityConfig {
     public CustomAuthenticationManager authenticationManager(UserDetailsService userDetailsService) {
         var authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService);
-        return new CustomAuthenticationManager(authenticationProvider);
+        return new CustomAuthenticationManager(userRepository, bCryptPasswordEncoder(), authenticationProvider);
     }
 
     @Bean

@@ -4,27 +4,33 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import com.aman.rest.user.User;
+import com.aman.rest.user.UserRepository;
 import org.springframework.context.MessageSource;
 import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.SpringSecurityMessageSource;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.util.Assert;
 
 public class CustomAuthenticationManager implements AuthenticationManager {
     private List<AuthenticationProvider> providers;
     protected MessageSourceAccessor messages;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final UserRepository userRepository;
 
-    public CustomAuthenticationManager(AuthenticationProvider... providers) {
-        this(Arrays.asList(providers));
+    public CustomAuthenticationManager(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, AuthenticationProvider... providers) {
+        this(userRepository, passwordEncoder, Arrays.asList(providers));
     }
 
-    public CustomAuthenticationManager(List<AuthenticationProvider> providers) {
+    public CustomAuthenticationManager(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder, List<AuthenticationProvider> providers) {
         this.messages = SpringSecurityMessageSource.getAccessor();
         Assert.notNull(providers, "providers list cannot be null");
         this.providers = new ArrayList<>(providers);
+        this.bCryptPasswordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
     }
 
     public void addProvider(AuthenticationProvider provider) {
@@ -32,49 +38,14 @@ public class CustomAuthenticationManager implements AuthenticationManager {
     }
 
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-        Class<? extends Authentication> toTest = authentication.getClass();
-        AuthenticationException lastException = null;
-        Authentication result = null;
-
-        for (AuthenticationProvider provider : this.providers) {
-            if (provider.supports(toTest)) {
-                try {
-                    result = provider.authenticate(authentication);
-                    if (result != null) {
-                        this.copyDetails(authentication, result);
-                        break;
-                    }
-                } catch (InternalAuthenticationServiceException | AccountStatusException var14) {
-                    throw var14;
-                } catch (AuthenticationException var15) {
-                    lastException = var15;
-                }
-            }
+        User user = userRepository.findByUsername(authentication.getName()).orElse(new User("non-existent-user", "password"));
+        if (bCryptPasswordEncoder.matches(authentication.getCredentials().toString(), user.getPassword())){
+            return new UsernamePasswordAuthenticationToken(authentication.getName(), user.getPassword());
         }
-
-        if (result != null) {
-            if (result instanceof CredentialsContainer credentialsContainer) {
-                credentialsContainer.eraseCredentials();
-            }
-
-            return result;
-        } else {
-            if (lastException == null) {
-                lastException = new ProviderNotFoundException(
-                    this.messages.getMessage("ProviderManager.providerNotFound", new Object[] { toTest.getName() }, "No AuthenticationProvider found for {0}"));
-            }
-            throw lastException;
-        }
+        throw new BadCredentialsException("Incorrect password");
     }
 
     public void setMessageSource(MessageSource messageSource) {
         this.messages = new MessageSourceAccessor(messageSource);
-    }
-
-    private void copyDetails(Authentication source, Authentication dest) {
-        if (dest instanceof AbstractAuthenticationToken token && dest.getDetails() == null) {
-            token.setDetails(source.getDetails());
-        }
-
     }
 }
