@@ -27,6 +27,8 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import com.nimbusds.jose.JOSEException;
@@ -119,6 +121,18 @@ public class JwtSecurityConfig {
             throw new IllegalStateException(
                 "Unable to generate an RSA Key Pair", e);
         }
+    }
+
+    @Bean
+    public WebMvcConfigurer corsConfigurer() {
+        return new WebMvcConfigurer() {
+            @Override
+            public void addCorsMappings(CorsRegistry registry){
+                registry.addMapping("/**")
+                    .allowedMethods("*")
+                    .allowedOrigins("http://localhost:3000/");
+            }
+        };
     }
 
 }
