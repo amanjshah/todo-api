@@ -72,7 +72,7 @@ public class JwtSecurityConfig {
     public CustomAuthenticationManager authenticationManager(UserDetailsService userDetailsService) {
         var authenticationProvider = new DaoAuthenticationProvider();
         authenticationProvider.setUserDetailsService(userDetailsService);
-        return new CustomAuthenticationManager(userRepository, bCryptPasswordEncoder(), authenticationProvider);
+        return new CustomAuthenticationManager(userRepository, bCryptPasswordEncoder());
     }
 
     @Bean
