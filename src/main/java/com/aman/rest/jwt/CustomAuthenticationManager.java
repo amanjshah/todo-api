@@ -2,19 +2,18 @@ package com.aman.rest.jwt;
 
 import com.aman.rest.user.User;
 import com.aman.rest.user.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Component;
 
+@Component
+@AllArgsConstructor
 public class CustomAuthenticationManager implements AuthenticationManager {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserRepository userRepository;
-
-    public CustomAuthenticationManager(UserRepository userRepository, BCryptPasswordEncoder passwordEncoder) {
-        this.bCryptPasswordEncoder = passwordEncoder;
-        this.userRepository = userRepository;
-    }
 
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         User user = userRepository.findByUsername(authentication.getName()).orElse(new User("non-existent-user", "password"));
