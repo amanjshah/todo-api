@@ -47,8 +47,7 @@ public class JwtSecurityConfig {
 
         return httpSecurity
             .authorizeHttpRequests(auth -> auth
-                .antMatchers("/register").permitAll()
-                .antMatchers("/authenticate").permitAll()
+                .antMatchers("/register", "/authenticate", "/").permitAll()
                 .requestMatchers(PathRequest.toH2Console()).permitAll()
                 .antMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                 .anyRequest()

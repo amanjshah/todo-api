@@ -3,6 +3,7 @@ package com.aman.rest.user;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,5 +20,10 @@ public class UserController {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return user;
+    }
+
+    @GetMapping("/")
+    public String dummyForAWS(){
+        return "ROOT";
     }
 }
